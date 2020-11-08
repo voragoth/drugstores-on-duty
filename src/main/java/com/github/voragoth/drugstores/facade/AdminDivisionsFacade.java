@@ -1,7 +1,5 @@
 package com.github.voragoth.drugstores.facade;
 
-import org.springframework.web.bind.annotation.RequestParam;
-
 import java.util.Map;
 
 /**
@@ -17,7 +15,7 @@ public interface AdminDivisionsFacade {
      * @param region la region para filtrar las comunas.
      * @return la lista comuna-llave de comunas pertenecientes a la region.
      */
-    Map<String, Integer> getCommunes(Integer region);
+    Map<String, Integer> getCommunes(Byte region);
 
     /**
      * Metodo que retorna las regiones.

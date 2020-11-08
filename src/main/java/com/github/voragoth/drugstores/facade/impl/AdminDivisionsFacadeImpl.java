@@ -17,7 +17,7 @@ public class AdminDivisionsFacadeImpl implements AdminDivisionsFacade {
      * {@inheritDoc}
      */
     @Override
-    public Map<String, Integer> getCommunes(Integer region) {
+    public Map<String, Integer> getCommunes(Byte region) {
         throw new IllegalStateException("metodo aun no implementado");
     }
 
