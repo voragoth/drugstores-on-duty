@@ -4,22 +4,30 @@ import feign.Request;
 import feign.RequestTemplate;
 import feign.Response;
 import feign.codec.Decoder;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.mock;
 
+/**
+ * Classe de test para HtmlResponsesFeignConfig
+ */
 class HtmlResponsesFeignConfigTest {
 
+    /**
+     * Test unitario para el decoder de HtmlResponsesFeignConfig
+     *
+     * @throws IOException
+     */
     @Test
-    void jsoupDecoderDecodeShouldBeOK() throws Exception {
+    @DisplayName("Test unitario para el decoder de HtmlResponsesFeignConfig")
+    void jsoupDecoderDecodeShouldBeOK() throws IOException {
         // objetos necesarios
         HtmlResponsesFeignConfig config = new HtmlResponsesFeignConfig();
         Decoder decoder = config.jsoupDecoder();
