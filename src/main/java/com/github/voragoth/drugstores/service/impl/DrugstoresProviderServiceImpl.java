@@ -1,9 +1,11 @@
 package com.github.voragoth.drugstores.service.impl;
 
-import com.github.voragoth.drugstores.dto.Drugstore;
+import com.github.voragoth.drugstores.dto.vo.DrugstoreVO;
 import com.github.voragoth.drugstores.service.DrugstoresProviderService;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -18,7 +20,8 @@ public class DrugstoresProviderServiceImpl implements DrugstoresProviderService 
      * {@inheritDoc}
      */
     @Override
-    public List<Drugstore> getDrugStoresOnDuty(String brand, String commune, Integer region) {
+    @Cacheable("drugstores")
+    public List<DrugstoreVO> getDrugStoresOnDuty(@NotNull String region) {
         throw new IllegalStateException("metodo aun no implementado");
     }
 }

@@ -1,7 +1,8 @@
 package com.github.voragoth.drugstores.service;
 
-import com.github.voragoth.drugstores.dto.Drugstore;
+import com.github.voragoth.drugstores.dto.vo.DrugstoreVO;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -12,12 +13,10 @@ import java.util.List;
 public interface DrugstoresProviderService {
 
     /**
-     * Metodo con la logica de negocio para obtener las farmacias filtradas por local, comuna y/o region.
+     * Metodo con la logica de negocio para obtener las farmacias de turno en la region.
      *
-     * @param brand   el local para filtrar la farmacia.
-     * @param commune la comuna para filtrar la farmacia.
      * @param region  la region para filtrar la farmacia.
-     * @return la lista de farmacias filtradas.
+     * @return la lista de farmacias de la region.
      */
-    List<Drugstore> getDrugStoresOnDuty(String brand, String commune, Integer region);
+    List<DrugstoreVO> getDrugStoresOnDuty(@NotNull String region);
 }

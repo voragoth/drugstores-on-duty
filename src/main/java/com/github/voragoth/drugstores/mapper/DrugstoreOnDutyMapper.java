@@ -1,5 +1,7 @@
 package com.github.voragoth.drugstores.mapper;
 
+import com.github.voragoth.drugstores.dto.Drugstore;
+import com.github.voragoth.drugstores.dto.vo.DrugstoreVO;
 import org.jsoup.nodes.Element;
 import org.mapstruct.Mapper;
 
@@ -32,4 +34,35 @@ public interface DrugstoreOnDutyMapper {
         return map;
     }
 
+    /**
+     * Metodo que mapea un objeto Drugstore desde un objeto DrugstoreVO.
+     *
+     * @param input el objeto DrugstoreVO a mapear
+     * @return el objeto Drugstore resultante del mapeo.
+     */
+    Drugstore mapDrugstoreVOToDrugstore(DrugstoreVO input);
+
+    /**
+     * Metodo que mapea una lista de Drugstore desde una lista de DrugstoreVO.
+     *
+     * @param input la lista de DrugstoreVO a mapear
+     * @return la lista de Drugstore resultante del mapeo.
+     */
+    List<Drugstore> mapDrugstoreVOListToDrugstoreList(List<DrugstoreVO> input);
+
+    /**
+     * Metodo que mapea un objeto DrugstoreVO desde un objeto Drugstore.
+     *
+     * @param input el objeto Drugstore a mapear
+     * @return el objeto DrugstoreVO resultante del mapeo.
+     */
+    DrugstoreVO mapDrugstoreToDrugstoreVO(Drugstore input);
+
+    /**
+     * Metodo que mapea una lista de DrugstoreVO desde una lista de Drugstore.
+     *
+     * @param input la lista de DrugstoreVO a mapear
+     * @return la lista de Drugstore resultante del mapeo.
+     */
+    List<DrugstoreVO> mapDrugstoreListToDrugstoreVOList(List<Drugstore> input);
 }
