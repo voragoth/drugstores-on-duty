@@ -1,3 +1,12 @@
+spring:
+  application:
+    name: drugstores-on-duty
+logging:
+  level:
+    root: ${env.drugstores.logging.level.root:ERROR}
+    com.github.voragoth.drugstores: ${env.drugstores.logging.level.service:INFO}
+    com.netflix.config.sources.URLConfigurationSource: ERROR
+feign.client.config.default.loggerLevel: ${env.drugstores.logging.feign:NONE}
 drugstores:
   default-region: ${env.drugstores.default-region}
   feign:

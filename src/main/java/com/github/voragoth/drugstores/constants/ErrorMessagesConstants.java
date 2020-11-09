@@ -1,4 +1,4 @@
-package com.github.voragoth.drugstores.handler;
+package com.github.voragoth.drugstores.constants;
 
 /**
  * Clase contenedora de constantes de mensajes de error.
@@ -25,4 +25,9 @@ public final class ErrorMessagesConstants {
      * Constante REGIONS NOT FOUND
      */
     public static final String REGIONS_NOT_FOUND = "No se encontraron regiones";
+
+    /**
+     * Constante REGIONS NOT FOUND
+     */
+    public static final String DRUGSTORES_NOT_FOUND = "No se encontraron farmacias";
 }

@@ -17,6 +17,7 @@ import java.util.Map;
         configuration = HtmlResponsesFeignConfig.class)
 public interface AdminDivisionsFeignClient {
 
+
     /**
      * Metodo que invoca al servicio que retorna las regiones del pais.
      *

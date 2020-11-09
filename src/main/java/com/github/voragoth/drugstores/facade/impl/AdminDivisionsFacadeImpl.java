@@ -1,7 +1,7 @@
 package com.github.voragoth.drugstores.facade.impl;
 
 import com.github.voragoth.drugstores.facade.AdminDivisionsFacade;
-import com.github.voragoth.drugstores.handler.ErrorMessagesConstants;
+import com.github.voragoth.drugstores.constants.ErrorMessagesConstants;
 import com.github.voragoth.drugstores.service.AdminDivisionsProviderService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.MapUtils;
@@ -39,9 +39,14 @@ public class AdminDivisionsFacadeImpl implements AdminDivisionsFacade {
      */
     @Override
     public Map<String, String> getCommunes(String region) {
+        log.info("Obteniendo comunas");
         Map<String, String> communes = adminDivisionsProviderService.getCommunes(region);
-        log.info("Comunas: {}", communes);
+        log.info("{} comunas obtenidas", MapUtils.size(communes));
+        if(log.isDebugEnabled()) {
+            log.debug("Comunas: {}", communes);
+        }
         if (MapUtils.isEmpty(communes)) {
+            log.error("0 comunas obtenidas");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessagesConstants.COMMUNES_NOT_FOUND);
         }
         return communes;
@@ -52,9 +57,14 @@ public class AdminDivisionsFacadeImpl implements AdminDivisionsFacade {
      */
     @Override
     public Map<String, String> getRegions() {
+        log.info("Obteniendo regiones");
         Map<String, String> regions = adminDivisionsProviderService.getRegions();
-        log.info("Regiones: {}", regions);
+        log.info("{} regiones obtenidas", MapUtils.size(regions));
+        if(log.isDebugEnabled()) {
+            log.debug("Regiones: {}", regions);
+        }
         if (MapUtils.isEmpty(regions)) {
+            log.error("0 regiones obtenidas");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessagesConstants.REGIONS_NOT_FOUND);
         }
         return regions;

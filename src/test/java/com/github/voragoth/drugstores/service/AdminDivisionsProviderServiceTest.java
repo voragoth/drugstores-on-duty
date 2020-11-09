@@ -12,6 +12,8 @@ import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
+import org.simplify4u.sjf4jmock.LoggerMock;
+import org.slf4j.Logger;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -63,9 +65,39 @@ class AdminDivisionsProviderServiceTest {
                 el -> !el.hasAttr("selected")).collect(Collectors.toList());
         Map<String, String> expected = drugstoreOnDutyMapper.mapElementListToMap(elements);
         drugstoreOnDutyMapper.mapElementListToMap(null);
+        Logger logger = LoggerMock.getLoggerMock(AdminDivisionsProviderServiceImpl.class);
 
         // stubbing
         doReturn(doc).when(adminDivisionsFeignClient).getRegions();
+        when(logger.isDebugEnabled()).thenReturn(false);
+
+        //test
+        Map<String, String> regions = service.getRegions();
+
+        //assert y verificacion
+        assertEquals(expected, regions);
+        verify(adminDivisionsFeignClient, times(1)).getRegions();
+        verify(drugstoreOnDutyMapper, times(2)).mapElementListToMap(anyList());
+    }
+
+    /**
+     * Test unitario getRegions esperando resultado OK pasando por debug
+     */
+    @Test
+    @DisplayName("Test unitario getRegions esperando resultado OK pasando por debug")
+    void getRegionsShouldReturnOKAndDebug() {
+        // objetos necesarios
+        String html = "<option value='0' selected>Elija Comuna</option><option value='1'>TEST</option>";
+        Document doc = Jsoup.parse(html);
+        List<Element> elements = doc.select("option").stream().filter(
+                el -> !el.hasAttr("selected")).collect(Collectors.toList());
+        Map<String, String> expected = drugstoreOnDutyMapper.mapElementListToMap(elements);
+        drugstoreOnDutyMapper.mapElementListToMap(null);
+        Logger logger = LoggerMock.getLoggerMock(AdminDivisionsProviderServiceImpl.class);
+
+        // stubbing
+        doReturn(doc).when(adminDivisionsFeignClient).getRegions();
+        when(logger.isDebugEnabled()).thenReturn(true);
 
         //test
         Map<String, String> regions = service.getRegions();
@@ -89,9 +121,38 @@ class AdminDivisionsProviderServiceTest {
         List<Element> elements = doc.select("option").stream().filter(
                 el -> !el.hasAttr("selected")).collect(Collectors.toList());
         Map<String, String> expected = drugstoreOnDutyMapper.mapElementListToMap(elements);
+        Logger logger = LoggerMock.getLoggerMock(AdminDivisionsProviderServiceImpl.class);
 
         // stubbing
         doReturn(doc).when(adminDivisionsFeignClient).getCommunes(anyMap());
+        when(logger.isDebugEnabled()).thenReturn(false);
+
+        // test
+        Map<String, String> communes = service.getCommunes("1");
+
+        // assert y verificacion
+        assertEquals(expected, communes);
+        verify(adminDivisionsFeignClient, times(1)).getCommunes(anyMap());
+        verify(drugstoreOnDutyMapper, times(2)).mapElementListToMap(anyList());
+    }
+
+    /**
+     * Test unitario getCommunes esperando resultado OK pasando por debug.
+     */
+    @Test
+    @DisplayName("Test unitario getCommunes esperando resultado OK pasando por debug")
+    void getCommunessShouldReturnOKAndDebug() {
+        // objetos necesarios
+        String html = "<option value='0' selected>Elija Region</option><option value='1'>TEST</option>";
+        Document doc = Jsoup.parse(html);
+        List<Element> elements = doc.select("option").stream().filter(
+                el -> !el.hasAttr("selected")).collect(Collectors.toList());
+        Map<String, String> expected = drugstoreOnDutyMapper.mapElementListToMap(elements);
+        Logger logger = LoggerMock.getLoggerMock(AdminDivisionsProviderServiceImpl.class);
+
+        // stubbing
+        doReturn(doc).when(adminDivisionsFeignClient).getCommunes(anyMap());
+        when(logger.isDebugEnabled()).thenReturn(true);
 
         // test
         Map<String, String> communes = service.getCommunes("1");
