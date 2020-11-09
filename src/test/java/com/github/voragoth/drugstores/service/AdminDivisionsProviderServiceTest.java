@@ -46,13 +46,13 @@ class AdminDivisionsProviderServiceTest {
         Document doc = Jsoup.parse(html);
         List<Element> elements = doc.select("option").stream().filter(
                 el -> !el.hasAttr("selected")).collect(Collectors.toList());
-        Map<String, Integer> expected = drugstoreOnDutyMapper.mapElementListToMap(elements);
+        Map<String, String> expected = drugstoreOnDutyMapper.mapElementListToMap(elements);
 
         // stubbing
         doReturn(doc).when(adminDivisionsFeignClient).getRegions();
 
         //test
-        Map<String, Integer> regions = service.getRegions();
+        Map<String, String> regions = service.getRegions();
 
         //assert y verificacion
         assertEquals(expected, regions);
@@ -69,13 +69,13 @@ class AdminDivisionsProviderServiceTest {
         Document doc = Jsoup.parse(html);
         List<Element> elements = doc.select("option").stream().filter(
                 el -> !el.hasAttr("selected")).collect(Collectors.toList());
-        Map<String, Integer> expected = drugstoreOnDutyMapper.mapElementListToMap(elements);
+        Map<String, String> expected = drugstoreOnDutyMapper.mapElementListToMap(elements);
 
         // stubbing
         doReturn(doc).when(adminDivisionsFeignClient).getCommunes(anyMap());
 
         // test
-        Map<String, Integer> communes = service.getCommunes(Byte.valueOf("1"));
+        Map<String, String> communes = service.getCommunes("1");
 
         // assert y verificacion
         assertEquals(expected, communes);

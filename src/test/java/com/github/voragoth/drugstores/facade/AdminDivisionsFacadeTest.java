@@ -16,7 +16,6 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -33,29 +32,29 @@ class AdminDivisionsFacadeTest {
     @Test
     @DisplayName("Test unitario getCommunes esperando resultado OK")
     void getCommunesShouldReturnCommunesOK() throws Exception {
-        Map<String, Integer> expected = new HashMap<>();
-        expected.put("Comuna de test", 1);
-        doReturn(expected).when(adminDivisionsProviderService).getCommunes(any(Byte.class));
-        Map<String, Integer> output = facade.getCommunes((byte) 1);
+        Map<String, String> expected = new HashMap<>();
+        expected.put("Comuna de test", "1");
+        doReturn(expected).when(adminDivisionsProviderService).getCommunes(anyString());
+        Map<String, String> output = facade.getCommunes( "1");
         assertEquals(output, expected);
-        verify(adminDivisionsProviderService, times(1)).getCommunes(any(Byte.class));
+        verify(adminDivisionsProviderService, times(1)).getCommunes(anyString());
     }
 
     @Test
     @DisplayName("Test unitario getCommunes esperando que lance excepcion")
     void getCommunesShouldThrowsException() throws Exception {
-        doReturn(new HashMap<>()).when(adminDivisionsProviderService).getCommunes(any(Byte.class));
-        assertThrows(ResponseStatusException.class, () -> facade.getCommunes((byte) 1));
-        verify(adminDivisionsProviderService, times(1)).getCommunes(any(Byte.class));
+        doReturn(new HashMap<>()).when(adminDivisionsProviderService).getCommunes(anyString());
+        assertThrows(ResponseStatusException.class, () -> facade.getCommunes("1"));
+        verify(adminDivisionsProviderService, times(1)).getCommunes(anyString());
     }
 
     @Test
     @DisplayName("Test unitario getRegions esperando resultado OK")
     void getCommunesShouldReturnRegionsOK() throws Exception {
-        Map<String, Integer> expected = new HashMap<>();
-        expected.put("Region de test", 1);
+        Map<String, String> expected = new HashMap<>();
+        expected.put("Region de test", "1");
         doReturn(expected).when(adminDivisionsProviderService).getRegions();
-        Map<String, Integer> output = facade.getRegions();
+        Map<String, String> output = facade.getRegions();
         assertEquals(output, expected);
         verify(adminDivisionsProviderService, times(1)).getRegions();
     }

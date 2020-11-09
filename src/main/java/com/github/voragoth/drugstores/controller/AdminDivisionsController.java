@@ -1,14 +1,12 @@
 package com.github.voragoth.drugstores.controller;
 
 import com.github.voragoth.drugstores.facade.AdminDivisionsFacade;
-import com.github.voragoth.drugstores.handler.ErrorMessagesConstants;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.constraints.Positive;
 import java.util.Map;
 
 /**
@@ -42,10 +40,9 @@ public class AdminDivisionsController {
      * @return la lista comuna-llave de comunas pertenecientes a la region.
      */
     @GetMapping("/v1/comunas")
-    public Map<String, Integer> getCommunes(
-            @Positive(message = ErrorMessagesConstants.REGION_MUST_BE_POSITIVE)
+    public Map<String, String> getCommunes(
             @RequestParam(name = "region", required = false, defaultValue = "${drugstores.defaultRegion:7}")
-                    Byte region) {
+                    String region) {
         return adminDivisionsFacade.getCommunes(region);
     }
 
@@ -55,7 +52,7 @@ public class AdminDivisionsController {
      * @return la lista comuna-llave de regiones.
      */
     @GetMapping("/v1/regiones")
-    public Map<String, Integer> getRegions() {
+    public Map<String, String> getRegions() {
         return adminDivisionsFacade.getRegions();
     }
 }

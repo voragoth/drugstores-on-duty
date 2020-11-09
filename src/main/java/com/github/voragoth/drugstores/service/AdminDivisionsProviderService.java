@@ -15,12 +15,12 @@ public interface AdminDivisionsProviderService {
      * @param region la region para filtrar las comunas.
      * @return la lista comuna-llave de comunas pertenecientes a la region.
      */
-    Map<String, Integer> getCommunes(Byte region);
+    Map<String, String> getCommunes(String region);
 
     /**
      * Metodo que retorna las regiones.
      *
      * @return la lista comuna-llave de regiones.
      */
-    Map<String, Integer> getRegions();
+    Map<String, String> getRegions();
 }

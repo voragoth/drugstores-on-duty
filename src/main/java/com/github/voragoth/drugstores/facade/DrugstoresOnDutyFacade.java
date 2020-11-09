@@ -19,6 +19,6 @@ public interface DrugstoresOnDutyFacade {
      * @param region  la region para filtrar la farmacia.
      * @return la lista de farmacias filtradas.
      */
-    List<Drugstore> getDrugStoresOnDuty(String brand, String commune, Integer region);
+    List<Drugstore> getDrugStoresOnDuty(String brand, String commune, String region);
 
 }

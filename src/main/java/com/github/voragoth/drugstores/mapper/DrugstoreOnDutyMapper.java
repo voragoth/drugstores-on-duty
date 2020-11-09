@@ -21,13 +21,13 @@ public interface DrugstoreOnDutyMapper {
      * @param elements los elementos a mapear
      * @return el hashmap con el nuevo map.
      */
-    default Map<String, Integer> mapElementListToMap(List<Element> elements) {
+    default Map<String, String> mapElementListToMap(List<Element> elements) {
         if (elements == null) {
             return null;
         }
-        Map<String, Integer> map = new HashMap<>();
+        Map<String, String> map = new HashMap<>();
         for (Element el : elements) {
-            map.put(el.text(), Integer.valueOf(el.val()));
+            map.put(el.text(), el.val());
         }
         return map;
     }

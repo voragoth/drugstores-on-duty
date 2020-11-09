@@ -18,7 +18,7 @@ public class DrugstoresOnDutyFacadeImpl implements DrugstoresOnDutyFacade {
      * {@inheritDoc}
      */
     @Override
-    public List<Drugstore> getDrugStoresOnDuty(String brand, String commune, Integer region) {
+    public List<Drugstore> getDrugStoresOnDuty(String brand, String commune, String region) {
         throw new IllegalStateException("metodo aun no implementado");
     }
 }

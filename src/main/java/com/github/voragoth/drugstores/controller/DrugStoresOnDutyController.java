@@ -45,7 +45,7 @@ public class DrugStoresOnDutyController {
     public List<Drugstore> getDrugStoresOnDuty(@RequestParam(name = "local", required = false) String brand,
                                                @RequestParam(name = "comuna", required = false) String commune,
                                                @RequestParam(name= "region", required = false,
-                                                       defaultValue = "${drugstores.defaultRegion:7}") Integer region) {
+                                                       defaultValue = "${drugstores.default-region:7}") String region) {
         return drugstoresOnDutyFacade.getDrugStoresOnDuty(brand, commune, region);
     }
 

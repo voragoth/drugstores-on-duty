@@ -47,7 +47,7 @@ public class AdminDivisionsProviderServiceImpl implements AdminDivisionsProvider
      * {@inheritDoc}
      */
     @Override
-    public Map<String, Integer> getCommunes(Byte region) {
+    public Map<String, String> getCommunes(String region) {
         Map<String, Object> formData = new HashMap<>();
         formData.put("reg_id", region);
         Document document = adminDivisionsFeignClient.getCommunes(formData);
@@ -62,7 +62,7 @@ public class AdminDivisionsProviderServiceImpl implements AdminDivisionsProvider
      * {@inheritDoc}
      */
     @Override
-    public Map<String, Integer> getRegions() {
+    public Map<String, String> getRegions() {
         Document document = adminDivisionsFeignClient.getRegions();
         log.info("Respuesta original Regiones: {}", document.body().toString());
         Elements elements = document.select("option");

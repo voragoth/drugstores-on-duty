@@ -38,8 +38,8 @@ public class AdminDivisionsFacadeImpl implements AdminDivisionsFacade {
      * {@inheritDoc}
      */
     @Override
-    public Map<String, Integer> getCommunes(Byte region) {
-        Map<String, Integer> communes = adminDivisionsProviderService.getCommunes(region);
+    public Map<String, String> getCommunes(String region) {
+        Map<String, String> communes = adminDivisionsProviderService.getCommunes(region);
         log.info("Comunas: {}", communes);
         if (MapUtils.isEmpty(communes)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessagesConstants.COMMUNES_NOT_FOUND);
@@ -51,8 +51,8 @@ public class AdminDivisionsFacadeImpl implements AdminDivisionsFacade {
      * {@inheritDoc}
      */
     @Override
-    public Map<String, Integer> getRegions() {
-        Map<String, Integer> regions = adminDivisionsProviderService.getRegions();
+    public Map<String, String> getRegions() {
+        Map<String, String> regions = adminDivisionsProviderService.getRegions();
         log.info("Regiones: {}", regions);
         if (MapUtils.isEmpty(regions)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessagesConstants.REGIONS_NOT_FOUND);
