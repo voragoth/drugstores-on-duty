@@ -20,7 +20,9 @@ import java.util.List;
 @RequestMapping("/api")
 public class DrugStoresOnDutyController {
 
-    /** La fachada para logica de las farmacias de turno */
+    /**
+     * La fachada para logica de las farmacias de turno
+     */
     private DrugstoresOnDutyFacade drugstoresOnDutyFacade;
 
     /**
@@ -36,15 +38,15 @@ public class DrugStoresOnDutyController {
      * Metodo que disponibiliza el endpoint para obtener las farmacias de turno filttrando por local, comuna, y region.
      * Los 3 parametros son opcionales.
      *
-     * @param name el local para filtrar la farmacia, en el endpoint es opcional.
+     * @param name    el local para filtrar la farmacia, en el endpoint es opcional.
      * @param commune la comuna para filtrar la farmacia, en el endpoint es opcional.
-     * @param region la region para filtrar la farmacia, en el endpoint es opcional.
+     * @param region  la region para filtrar la farmacia, en el endpoint es opcional.
      * @return la lista de farmacias filtradas.
      */
     @GetMapping("/v1/farmacias-de-turno")
     public List<Drugstore> getDrugStoresOnDuty(@RequestParam(name = "local", required = false) String name,
                                                @RequestParam(name = "comuna", required = false) String commune,
-                                               @RequestParam(name= "region", required = false,
+                                               @RequestParam(name = "region", required = false,
                                                        defaultValue = "${drugstores.default-region:7}") String region) {
         return drugstoresOnDutyFacade.getDrugStoresOnDuty(name, commune, region);
     }

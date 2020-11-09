@@ -12,10 +12,21 @@ import java.time.DayOfWeek;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Clase para deserializar un string representan un dia a DayOfWeek.
+ *
+ * @author Manuel Vasquez Cruz.
+ */
 public class CustomDayOfWeekDeserializer extends StdDeserializer<DayOfWeek> {
 
+    /**
+     * El mapeo de dias a DayOfWeek
+     */
     private static final Map<String, DayOfWeek> DAYS = new HashMap<>();
 
+    /**
+     * El constructor
+     */
     public CustomDayOfWeekDeserializer() {
         super(DayOfWeek.class);
         if (MapUtils.isEmpty(DAYS)) {
@@ -29,6 +40,14 @@ public class CustomDayOfWeekDeserializer extends StdDeserializer<DayOfWeek> {
         }
     }
 
+    /**
+     * Metodo para deserializar un atributo json a DayOfWeek. Si no puede retorna un null.
+     *
+     * @param parser  el JsonParser
+     * @param context el contexto
+     * @return el DayOfWeek Parseado
+     * @throws IOException si no puede parsearse
+     */
     @Override
     public DayOfWeek deserialize(JsonParser parser, DeserializationContext context) throws IOException {
         if (parser.hasToken(JsonToken.VALUE_STRING)) {

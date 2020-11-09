@@ -13,14 +13,28 @@ import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.util.Locale;
 
+/**
+ * Clase para deserializar un string numerico a Bigdecimal, siendo este un valor de coordenadas.
+ *
+ * @author Manuel Vasquez Cruz.
+ */
 public class CustomBigDecimalDeserializer extends StdDeserializer<BigDecimal> {
 
+    /**
+     * Formato para la conversion.
+     */
     public static final String FORMAT = "###.###############";
 
+    /**
+     * Formateador para la conversion.
+     */
     private static final DecimalFormat FORMATTER = new DecimalFormat(FORMAT);
 
 
-    protected CustomBigDecimalDeserializer() {
+    /**
+     * Constructor
+     */
+    public CustomBigDecimalDeserializer() {
         super(BigDecimal.class);
         DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.FRANCE);
         symbols.setDecimalSeparator('.');
@@ -28,6 +42,14 @@ public class CustomBigDecimalDeserializer extends StdDeserializer<BigDecimal> {
         FORMATTER.setParseBigDecimal(true);
     }
 
+    /**
+     * Metodo para deserializar un atributo json a BigDecimal. Si no puede retorna un null.
+     *
+     * @param parser el JsonParser
+     * @param ctxt   el contexto
+     * @return el BigDecimal Parseado
+     * @throws IOException si no puede parsearse
+     */
     @Override
     public BigDecimal deserialize(JsonParser parser, DeserializationContext ctxt) throws IOException {
         if (parser.hasToken(JsonToken.VALUE_STRING)) {
