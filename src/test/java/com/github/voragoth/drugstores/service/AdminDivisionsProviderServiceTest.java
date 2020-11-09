@@ -47,6 +47,7 @@ class AdminDivisionsProviderServiceTest {
         List<Element> elements = doc.select("option").stream().filter(
                 el -> !el.hasAttr("selected")).collect(Collectors.toList());
         Map<String, String> expected = drugstoreOnDutyMapper.mapElementListToMap(elements);
+        drugstoreOnDutyMapper.mapElementListToMap(null);
 
         // stubbing
         doReturn(doc).when(adminDivisionsFeignClient).getRegions();

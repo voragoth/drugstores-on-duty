@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.time.DayOfWeek;
@@ -32,7 +33,7 @@ public class CustomDayOfWeekDeserializer extends StdDeserializer<DayOfWeek> {
     public DayOfWeek deserialize(JsonParser parser, DeserializationContext context) throws IOException {
         if (parser.hasToken(JsonToken.VALUE_STRING)) {
             String string = parser.getText().trim();
-            if (string.length() == 0) {
+            if (StringUtils.isBlank(string)) {
                 return null;
             }
             if (DAYS.containsKey(string)) {

@@ -28,7 +28,7 @@ public class CustomLocalTimeDeserializer extends StdDeserializer<LocalTime> {
 
         if (parser.hasToken(JsonToken.VALUE_STRING)) {
             String string = parser.getText().trim();
-            if (string.length() == 0) {
+            if (StringUtils.isBlank(string)) {
                 return null;
             }
             string = StringUtils.remove(string, SUFFIX);

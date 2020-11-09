@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -31,7 +32,7 @@ public class CustomBigDecimalDeserializer extends StdDeserializer<BigDecimal> {
     public BigDecimal deserialize(JsonParser parser, DeserializationContext ctxt) throws IOException {
         if (parser.hasToken(JsonToken.VALUE_STRING)) {
             String string = parser.getText().trim();
-            if (string.length() == 0) {
+            if (StringUtils.isBlank(string)) {
                 return null;
             }
             try {
