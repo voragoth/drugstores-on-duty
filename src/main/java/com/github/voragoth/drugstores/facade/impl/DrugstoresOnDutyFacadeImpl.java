@@ -5,6 +5,7 @@ import com.github.voragoth.drugstores.dto.vo.DrugstoreVO;
 import com.github.voragoth.drugstores.facade.DrugstoresOnDutyFacade;
 import com.github.voragoth.drugstores.mapper.DrugstoreOnDutyMapper;
 import com.github.voragoth.drugstores.service.DrugstoresProviderService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,7 @@ import java.util.stream.Stream;
  *
  * @author Manuel Vasquez Cruz.
  */
+@Slf4j
 @Service
 public class DrugstoresOnDutyFacadeImpl implements DrugstoresOnDutyFacade {
 
@@ -50,11 +52,16 @@ public class DrugstoresOnDutyFacadeImpl implements DrugstoresOnDutyFacade {
     @Override
     public List<Drugstore> getDrugStoresOnDuty(String name, String commune, @NotNull String region) {
         List<DrugstoreVO> drugstoresVO = drugstoresProviderService.getDrugStoresOnDuty(region);
+        log.info("Respuesta farmacias de turno: {}", drugstoresVO);
         Stream<DrugstoreVO> drugstoresVOStream = drugstoresVO.stream();
+
+        // filtrado por local
         if (StringUtils.isNotEmpty(name)) {
             drugstoresVOStream = drugstoresVOStream.filter(
                     d -> name.trim().equalsIgnoreCase(StringUtils.trim(d.getName())));
         }
+
+        // filtrado por comuna
         if (StringUtils.isNotEmpty(commune)) {
             drugstoresVOStream = drugstoresVOStream.filter(
                     d -> commune.trim().equalsIgnoreCase(StringUtils.trim(d.getCommuneId())));
