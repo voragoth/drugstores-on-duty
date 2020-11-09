@@ -12,7 +12,6 @@ import java.math.BigDecimal;
  * Clase que estructura los datos perteneciente a una farmacia
  *
  * @author Manuel Vasquez Cruz.
- *
  */
 @Data
 @Builder

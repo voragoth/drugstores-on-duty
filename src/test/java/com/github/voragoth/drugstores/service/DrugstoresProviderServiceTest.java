@@ -21,29 +21,46 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
+/**
+ * Clase de test para DrugstoresProviderService
+ */
 @SpringBootTest
 @ActiveProfiles("test")
-@SuppressWarnings("unchecked")
 class DrugstoresProviderServiceTest {
 
-    private static final PodamFactory factory = new PodamFactoryImpl();
-
+    /**
+     * El cliente feign para stubbing
+     */
     @Mock
     private DrugstoreByRegionFeignClient drugstoreByRegionFeignClient;
 
+    /**
+     * El mapper.
+     */
     @Spy
     private DrugstoreOnDutyMapper drugstoreOnDutyMapper = Mappers.getMapper(DrugstoreOnDutyMapper.class);
 
+    /**
+     * El servicio a testear.
+     */
     @Spy
     @InjectMocks
     private DrugstoresProviderService service = new DrugstoresProviderServiceImpl(
             drugstoreByRegionFeignClient, drugstoreOnDutyMapper);
 
+    /**
+     * El factory de podam.
+     */
+    private static PodamFactory factory = new PodamFactoryImpl();
+
+    /**
+     * Test unitario getDrugStoresOnDuty esperando resultado OK"
+     */
     @Test
     @DisplayName("Test unitario getDrugStoresOnDuty esperando resultado OK")
-    void getDrugStoresOnDutyShouldReturnOK() throws Exception {
+    void getDrugStoresOnDutyShouldReturnOK() {
         // objetos necesarios
-        List<DrugstoreFeignDTO> drugstores = factory.manufacturePojo(List.class, DrugstoreFeignDTO.class);
+        List<DrugstoreFeignDTO> drugstores = manufactureList();
         // NOTA: llama internamente al maper aca las primeras N veces, luego el servicio lo vuelve a hacer
         List<DrugstoreVO> expected = drugstoreOnDutyMapper.mapDrugstoreFeignDTOListToDrugstoreVOList(drugstores);
         int timesToVerify = expected.size() * 2;
@@ -57,6 +74,17 @@ class DrugstoresProviderServiceTest {
         assertEquals(expected, actual);
         verify(drugstoreByRegionFeignClient, times(1)).getDrugstoresOnDuty(anyString());
         verify(drugstoreOnDutyMapper, times(timesToVerify)).mapDrugstoreFeignDTOToDrugstoreVO(any(DrugstoreFeignDTO.class));
+    }
+
+    /**
+     * Metodo para retornar una lista DrugstoreFeignDTO con podam
+     *
+     * @return la lista generada por podam.
+     */
+    private List<DrugstoreFeignDTO> manufactureList() {
+        @SuppressWarnings("unchecked")
+        List<DrugstoreFeignDTO> drugstores = factory.manufacturePojo(List.class, DrugstoreFeignDTO.class);
+        return drugstores;
     }
 
 }

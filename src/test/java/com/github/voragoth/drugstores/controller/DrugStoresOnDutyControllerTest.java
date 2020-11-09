@@ -18,34 +18,57 @@ import uk.co.jemos.podam.api.PodamFactoryImpl;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * Clase de tests para DrugStoresOnDutyController.
+ * <p>
+ * Se suprimen warnings de unchecked por uso de podam
+ */
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-@SuppressWarnings("unchecked")
 class DrugStoresOnDutyControllerTest {
 
+    /**
+     * El objeto MockMvc para ejecutar las llamadas..
+     */
     @Autowired
     private MockMvc mockMvc;
 
+    /**
+     * El mapper de jackson.
+     */
     @Autowired
     private ObjectMapper objectMapper;
 
+    /**
+     * La fachada para los stubbing.
+     */
     @MockBean
     private DrugstoresOnDutyFacade facade;
 
+    /**
+     * El factory de podam.
+     */
     private static PodamFactory factory = new PodamFactoryImpl();
 
+    /**
+     * Test unitario api/v1/comunas esperando resultado OK.
+     *
+     * @throws Exception en caso de que MockMvc.perform falle.
+     */
     @Test
     @DisplayName("Test unitario api/v1/comunas esperando resultado OK")
     void getDrugStoresOnDutyReturnOK() throws Exception {
-        List<Drugstore> drugstores = factory.manufacturePojo(List.class, Drugstore.class);
+        // objetos necesarios
+        List<Drugstore> drugstores = manufactureList();
         doReturn(drugstores).when(facade).getDrugStoresOnDuty(anyString(), anyString(), anyString());
+
+        // test y asserts
         this.mockMvc
                 .perform(get("/api/v1/farmacias-de-turno")
                         .param("local", "1")
@@ -55,9 +78,23 @@ class DrugStoresOnDutyControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(result -> {
                     String json = result.getResponse().getContentAsString();
-                    List<Drugstore> actualObject = objectMapper.readValue(json, new TypeReference<List<Drugstore>>(){} );
+                    List<Drugstore> actualObject = objectMapper.readValue(json, new TypeReference<List<Drugstore>>() {
+                    });
                     assertEquals(actualObject, drugstores);
                 });
+        // verificaciones
+        verify(facade, times(1)).getDrugStoresOnDuty(anyString(), anyString(), anyString());
+    }
+
+    /**
+     * Crea una lista dummy con podam y encapsula el waring de unchecked.
+     *
+     * @return la lista de Drugstore
+     */
+    private List<Drugstore> manufactureList() {
+        @SuppressWarnings("unchecked")
+        List<Drugstore> drugstores = factory.manufacturePojo(List.class, Drugstore.class);
+        return drugstores;
     }
 
 }
