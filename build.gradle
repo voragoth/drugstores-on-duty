@@ -20,21 +20,36 @@ repositories {
 	mavenCentral()
 }
 
+ext {
+	set('springCloudVersion', "Hoxton.SR8")
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-cache'
 	implementation 'org.springdoc:springdoc-openapi-ui:1.4.8'
+	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
+
+	implementation 'commons-io:commons-io:2.8.0'
+	implementation 'org.jsoup:jsoup:1.13.1'
 	implementation 'com.netflix.hystrix:hystrix-core:1.5.18'
 	implementation 'org.apache.commons:commons-lang3:3.11'
 	implementation 'org.apache.commons:commons-collections4:4.4'
-
+	implementation 'org.mapstruct:mapstruct:1.4.1.Final'
 
 	annotationProcessor 'org.projectlombok:lombok'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.1.Final'
 
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
 	}
 }
 

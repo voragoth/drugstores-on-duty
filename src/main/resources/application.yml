@@ -1,0 +1,7 @@
+drugstores:
+  default-region: ${env.drugstores.default-region}
+  feign:
+    admin-divisions:
+      base-url: ${env.admin-division.base-url}
+      regions-path: ${env.admin-division.regions-path}
+      communes-path: ${env.admin-division.communes-path}
