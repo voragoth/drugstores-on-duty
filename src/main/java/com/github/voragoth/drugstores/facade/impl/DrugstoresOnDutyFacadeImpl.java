@@ -21,11 +21,23 @@ import java.util.stream.Stream;
 @Service
 public class DrugstoresOnDutyFacadeImpl implements DrugstoresOnDutyFacade {
 
+    /**
+     * Servicio que provee de las farmacias por region.
+     */
     private DrugstoresProviderService drugstoresProviderService;
 
+    /**
+     * El mapper de la aplicacion.
+     */
     private DrugstoreOnDutyMapper drugstoreOnDutyMapper;
 
 
+    /**
+     * Constructor de la fachada.
+     *
+     * @param drugstoresProviderService servicio que provee las farmacias por region.
+     * @param drugstoreOnDutyMapper     el mapper de la aplicacion
+     */
     public DrugstoresOnDutyFacadeImpl(DrugstoresProviderService drugstoresProviderService,
                                       DrugstoreOnDutyMapper drugstoreOnDutyMapper) {
         this.drugstoresProviderService = drugstoresProviderService;

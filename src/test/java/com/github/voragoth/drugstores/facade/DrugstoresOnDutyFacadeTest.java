@@ -45,7 +45,7 @@ class DrugstoresOnDutyFacadeTest {
     void getDrugStoresOnDutyShouldReturnOK1() throws Exception {
         // objetos necesarios
         List<DrugstoreVO> drugstores = factory.manufacturePojo(List.class, DrugstoreVO.class);
-        // *1) llama internamente a mapDrugstoreVOToDrugstore las primeras N veces, luego el servicio lo vuelve a hacer
+        // NOTA: llama internamente al maper aca las primeras N veces, luego el servicio lo vuelve a hacer
         List<Drugstore> expected = drugstoreOnDutyMapper.mapDrugstoreVOListToDrugstoreList(drugstores);
         int expectedTimes = expected.size() * 2;
 

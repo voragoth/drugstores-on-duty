@@ -6,7 +6,7 @@ import com.github.voragoth.drugstores.service.AdminDivisionsProviderService;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  * @author Manuel Vasquez Cruz
  */
 @Slf4j
-@Service
+@Component
 public class AdminDivisionsProviderServiceImpl implements AdminDivisionsProviderService {
 
     /**
