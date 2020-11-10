@@ -1,6 +1,8 @@
 spring:
   application:
     name: drugstores-on-duty
+  profiles:
+    active: dev
 logging:
   level:
     root: ${env.drugstores.logging.level.root:ERROR}
