@@ -21,7 +21,7 @@ repositories {
 }
 
 ext {
-    set('springCloudVersion', "Hoxton.SR8")
+    set('springCloudVersion', "Hoxton.SR9")
 }
 
 dependencies {
@@ -38,6 +38,7 @@ dependencies {
     implementation 'org.apache.commons:commons-lang3:3.11'
     implementation 'org.apache.commons:commons-collections4:4.4'
     implementation 'org.mapstruct:mapstruct:1.4.1.Final'
+    implementation 'org.springframework.cloud:spring-cloud-starter-config'
 
     annotationProcessor 'org.projectlombok:lombok'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.1.Final'
