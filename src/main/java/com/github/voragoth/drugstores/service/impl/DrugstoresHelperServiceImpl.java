@@ -68,7 +68,10 @@ public class DrugstoresHelperServiceImpl implements DrugstoresHelperService {
 
         onDutyDrugstores = onDutyDrugstores.stream()
                 .filter(d -> region.trim().equalsIgnoreCase(StringUtils.trim(d.getRegionId())))
-                .collect(Collectors.toList());
+                .map(d -> {
+                    d.setOnDuty(true);
+                    return d;
+                }).collect(Collectors.toList());
 
         return onDutyDrugstores;
     }
@@ -84,7 +87,6 @@ public class DrugstoresHelperServiceImpl implements DrugstoresHelperService {
         }
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -98,9 +100,10 @@ public class DrugstoresHelperServiceImpl implements DrugstoresHelperService {
         }
         if (StringUtils.isNotBlank(commune) && filter.isPresent()) {
             filter =
-                    Optional.of(filter.get().and(d -> commune.trim().equalsIgnoreCase(StringUtils.trim(d.getCommuneId()))));
+                    Optional.of(filter.get().and(d -> StringUtils.normalizeSpace(commune).equalsIgnoreCase(StringUtils.normalizeSpace(d.getCommune()))));
         } else if (StringUtils.isNotBlank(commune)) {
-            filter = Optional.of(d -> commune.trim().equalsIgnoreCase(StringUtils.trim(d.getCommuneId())));
+            filter =
+                    Optional.of(d -> StringUtils.normalizeSpace(commune).equalsIgnoreCase(StringUtils.normalizeSpace(d.getCommune())));
         }
         return filter;
     }

@@ -49,6 +49,11 @@ public class DrugstoreVO {
     private String communeId;
 
     /**
+     * El nombre de la comuna
+     */
+    private String commune;
+
+    /**
      * El id de la region.
      */
     private String regionId;

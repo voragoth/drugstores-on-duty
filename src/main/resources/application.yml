@@ -6,6 +6,7 @@ logging:
     root: ${env.drugstores.logging.level.root:ERROR}
     com.github.voragoth.drugstores: ${env.drugstores.logging.level.service:INFO}
     com.netflix.config.sources.URLConfigurationSource: ERROR
+hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: ${env.drugstores.hystrix.base-timeout:5000}
 feign:
   hystrix:
     enabled: ${env.drugstores.feign.hystrix.enabled:true}
@@ -14,11 +15,11 @@ feign:
       default:
         loggerLevel: ${env.drugstores.feign.logging.level:NONE}
     drugstores-on-duty:
-      connectTimeout: ${env.drugstores.feign.drugstores-on-duty.connect-timeout:10000}
-      readTimeout: ${env.drugstores.feign.drugstores-on-duty.read-timeout:20000}
+      connectTimeout: ${env.drugstores.feign.drugstores-on-duty.connect-timeout:5000}
+      readTimeout: ${env.drugstores.feign.drugstores-on-duty.read-timeout:5000}
     admin-divisions:
-      connectTimeout: ${env.drugstores.feign.admin-divisions.connect-timeout:10000}
-      readTimeout: ${env.drugstores.feign.admin-divisions.read-timeout:20000}
+      connectTimeout: ${env.drugstores.feign.admin-divisions.connect-timeout:5000}
+      readTimeout: ${env.drugstores.feign.admin-divisions.read-timeout:5000}
 drugstores:
   default-region: ${env.drugstores.default-region}
   feign:
