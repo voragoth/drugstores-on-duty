@@ -7,14 +7,17 @@ import com.github.voragoth.drugstores.mapper.DrugstoreOnDutyMapper;
 import com.github.voragoth.drugstores.service.DrugstoresProviderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 /**
- * Implementacion del servicio que obtiene y filtra las farmacias de turno.
+ * Componente que obtiene y filtra las farmacias de turno de forma asyncrona.
  *
  * @author Manuel Vasquez Cruz
  */
@@ -36,23 +39,44 @@ public class DrugstoresProviderServiceImpl implements DrugstoresProviderService 
      * El constructor necesario para inyectar las dependencias del servicio.
      *
      * @param drugstoreByRegionFeignClient el cliente feign.
-     * @param drugstoreOnDutyMapper el mapper de la aplicacion.
+     * @param drugstoreOnDutyMapper        el mapper de la aplicacion.
      */
     public DrugstoresProviderServiceImpl(DrugstoreByRegionFeignClient drugstoreByRegionFeignClient,
-                                         DrugstoreOnDutyMapper drugstoreOnDutyMapper) {
+            DrugstoreOnDutyMapper drugstoreOnDutyMapper) {
         this.drugstoreByRegionFeignClient = drugstoreByRegionFeignClient;
         this.drugstoreOnDutyMapper = drugstoreOnDutyMapper;
     }
 
     /**
-     * {@inheritDoc}
+     * Metodo con la logica de negocio para obtener las farmacias de la region.
+     *
+     * @param region la region para filtrar la farmacia.
+     * @return la lista de farmacias de la region.
      */
-    @Override
+    @Async
     @Cacheable("drugstores")
-    public List<DrugstoreVO> getDrugStoresOnDuty(@NotNull String region) {
-        List<DrugstoreFeignDTO> drugstoresOnDuty = drugstoreByRegionFeignClient.getDrugstoresOnDuty(region);
-        return drugstoresOnDuty.stream().map(
-                drugstoreOnDutyMapper::mapDrugstoreFeignDTOToDrugstoreVO)
-                .collect(Collectors.toList());
+    public Future<List<DrugstoreVO>> getDrugStoresByRegion(@NotNull String region) {
+        CompletableFuture<List<DrugstoreVO>> future = new CompletableFuture<>();
+        List<DrugstoreFeignDTO> drugstoresByRegion = drugstoreByRegionFeignClient.getDrugstoresByRegion(region);
+        future.complete(
+                drugstoresByRegion.stream().map(drugstoreOnDutyMapper::mapDrugstoreFeignDTOToDrugstoreVO)
+                        .collect(Collectors.toList()));
+
+        return future;
+    }
+
+    /**
+     * Metodo con la logica de negocio para obtener las farmacias en turno del pais.
+     *
+     * @return la lista de farmacias de la region.
+     */
+    @Async
+    public Future<List<DrugstoreVO>> getDrugstoresOnDuty() {
+        CompletableFuture<List<DrugstoreVO>> future = new CompletableFuture<>();
+        List<DrugstoreFeignDTO> drugstoresOnDuty = drugstoreByRegionFeignClient.getDrugstoresOnDuty();
+        future.complete(
+                drugstoresOnDuty.stream().map(drugstoreOnDutyMapper::mapDrugstoreFeignDTOToDrugstoreVO)
+                        .collect(Collectors.toList()));
+        return future;
     }
 }

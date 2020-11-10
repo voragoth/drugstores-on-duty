@@ -5,6 +5,7 @@ import com.github.voragoth.drugstores.dto.vo.DrugstoreVO;
 import com.github.voragoth.drugstores.feign.dto.DrugstoreFeignDTO;
 import org.jsoup.nodes.Element;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.util.HashMap;
 import java.util.List;
@@ -58,6 +59,7 @@ public interface DrugstoreOnDutyMapper {
      * @param input el objeto DrugstoreFeignDTO a mapear
      * @return el objeto DrugstoreVO resultante del mapeo.
      */
+    @Mapping(target = "onDuty", expression = "java(false)")
     DrugstoreVO mapDrugstoreFeignDTOToDrugstoreVO(DrugstoreFeignDTO input);
 
     /**

@@ -48,4 +48,10 @@ public class Drugstore {
      */
     @JsonProperty("longitud")
     private BigDecimal longitude;
+
+    /**
+     * Bandera que indica si la farmacia esta realmente de turno.
+     */
+    @JsonProperty("turno")
+    private boolean onDuty;
 }

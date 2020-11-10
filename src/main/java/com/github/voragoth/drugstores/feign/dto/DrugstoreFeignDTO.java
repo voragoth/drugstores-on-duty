@@ -1,6 +1,7 @@
 package com.github.voragoth.drugstores.feign.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
@@ -113,4 +114,11 @@ public class DrugstoreFeignDTO {
      */
     @JsonProperty("fk_comuna")
     private String communeId;
+
+    /**
+     * El id de la comuna.
+     */
+    @JsonProperty("fk_localidad")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String locationId;
 }

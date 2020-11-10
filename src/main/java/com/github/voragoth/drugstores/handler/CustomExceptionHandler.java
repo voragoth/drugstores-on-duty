@@ -1,5 +1,7 @@
 package com.github.voragoth.drugstores.handler;
 
+import com.github.voragoth.drugstores.constants.ErrorMessagesConstants;
+import com.netflix.hystrix.exception.HystrixRuntimeException;
 import lombok.Builder;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.validation.ConstraintViolation;
@@ -88,6 +91,32 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
         }
         return new ResponseEntity<>(body, new HttpHeaders(), HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * Metodo que intercepta el error de hystrix para transparentar el mensaje original de la excepcion.
+     *
+     * @param ex      la excepcion.
+     * @param request el request.
+     * @return la respuesta en un formato legible.
+     */
+    @ExceptionHandler({HystrixRuntimeException.class})
+    public ResponseEntity<Object> handleHystrixRuntimeException(HystrixRuntimeException ex, ServletWebRequest request) {
+        String message = ErrorMessagesConstants.SHORTCIRCUIT_CAUSED_BY + ex.getFailureType().name();
+        if (ex.getFallbackException() != null && ex.getFallbackException().getCause() instanceof AssertionError
+                && ex.getFallbackException().getCause().getCause() instanceof ResponseStatusException) {
+            ResponseStatusException rse = (ResponseStatusException) ex.getFallbackException().getCause().getCause();
+            message = rse.getReason();
+        }
+
+        ApiError body = ApiError.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .path(request.getRequest().getRequestURI())
+                .error(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
+                .message(message)
+                .build();
+        return new ResponseEntity<>(body, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     /**

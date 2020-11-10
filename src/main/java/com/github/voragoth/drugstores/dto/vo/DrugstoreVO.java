@@ -48,4 +48,24 @@ public class DrugstoreVO {
      */
     private String communeId;
 
+    /**
+     * El nombre de la comuna
+     */
+    private String commune;
+
+    /**
+     * El id de la region.
+     */
+    private String regionId;
+
+    /**
+     * El id de la region.
+     */
+    private String localId;
+
+    /**
+     * Bandera si la farmacia esta de turno.
+     */
+    private boolean onDuty;
+
 }

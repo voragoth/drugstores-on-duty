@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
+import org.simplify4u.sjf4jmock.LoggerMock;
+import org.slf4j.Logger;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.server.ResponseStatusException;
@@ -53,10 +55,13 @@ class AdminDivisionsFacadeTest {
     void getCommunesShouldReturnCommunesOK() {
 
         // objetos necesarios
-        Map<String, String> expected = factory.manufacturePojo(Map.class, String.class, String.class);
+        Map<String, String> expected = manufactureMap();
+
+        Logger logger = LoggerMock.getLoggerMock(AdminDivisionsFacadeImpl.class);
 
         // stubbing
         doReturn(expected).when(adminDivisionsProviderService).getCommunes(anyString());
+        when(logger.isDebugEnabled()).thenReturn(true);
 
         //test
         Map<String, String> output = facade.getCommunes("1");
@@ -87,12 +92,14 @@ class AdminDivisionsFacadeTest {
      */
     @Test
     @DisplayName("Test unitario getRegions esperando resultado OK")
-    void getCommunesShouldReturnRegionsOK() {
+    void getRegionsShouldReturnOK() {
         // objetos necesarios
-        Map<String, String> expected = factory.manufacturePojo(Map.class, String.class, String.class);
+        Map<String, String> expected = manufactureMap();
+        Logger logger = LoggerMock.getLoggerMock(AdminDivisionsFacadeImpl.class);
 
         // stubbing
         doReturn(expected).when(adminDivisionsProviderService).getRegions();
+        when(logger.isDebugEnabled()).thenReturn(true);
 
         // test
         Map<String, String> output = facade.getRegions();
@@ -116,6 +123,17 @@ class AdminDivisionsFacadeTest {
 
         // verificacion
         verify(adminDivisionsProviderService, times(1)).getRegions();
+    }
+
+    /**
+     * Retorna un Map<String,String> dummy ocultando warning unchecked.
+     *
+     * @return el map
+     */
+    private Map<String, String> manufactureMap() {
+        @SuppressWarnings("unchecked")
+        Map<String, String> map = factory.manufacturePojo(Map.class, String.class, String.class);
+        return map;
     }
 
 }

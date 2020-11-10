@@ -1,5 +1,6 @@
 package com.github.voragoth.drugstores.service.impl;
 
+import com.github.voragoth.drugstores.constants.ApplicationConstants;
 import com.github.voragoth.drugstores.feign.client.AdminDivisionsFeignClient;
 import com.github.voragoth.drugstores.mapper.DrugstoreOnDutyMapper;
 import com.github.voragoth.drugstores.service.AdminDivisionsProviderService;
@@ -49,9 +50,13 @@ public class AdminDivisionsProviderServiceImpl implements AdminDivisionsProvider
     @Override
     public Map<String, String> getCommunes(String region) {
         Map<String, Object> formData = new HashMap<>();
-        formData.put("reg_id", region);
+        formData.put(ApplicationConstants.REGION_ID_FEIGN_KEY, region);
+        log.info("Invocando el cliente feign para obtener comunas");
         Document document = adminDivisionsFeignClient.getCommunes(formData);
-        log.info("Respuesta original comunas: {}", document.body().toString());
+        log.info("Respuesta comunas obtenida");
+        if(log.isDebugEnabled()) {
+            log.debug("Respuesta original Comunas: {}", document.body().toString());
+        }
         Elements elements = document.select("option");
         return drugstoreOnDutyMapper.mapElementListToMap(
                 elements.stream().filter(el -> !el.hasAttr("selected")).collect(Collectors.toList())
@@ -63,8 +68,12 @@ public class AdminDivisionsProviderServiceImpl implements AdminDivisionsProvider
      */
     @Override
     public Map<String, String> getRegions() {
+        log.info("Invocando el cliente feign para obtener regiones");
         Document document = adminDivisionsFeignClient.getRegions();
-        log.info("Respuesta original Regiones: {}", document.body().toString());
+        log.info("Respuesta regiones obtenida");
+        if(log.isDebugEnabled()) {
+            log.debug("Respuesta original Regiones: {}", document.body().toString());
+        }
         Elements elements = document.select("option");
         return drugstoreOnDutyMapper.mapElementListToMap(
                 elements.stream().filter(el -> !el.hasAttr("selected")).collect(Collectors.toList())

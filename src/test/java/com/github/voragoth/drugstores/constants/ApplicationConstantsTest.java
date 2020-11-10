@@ -9,21 +9,21 @@ import java.lang.reflect.InvocationTargetException;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
- * Clase de tests para ErrorMessagesConstants.
+ * Clase de tests para ApplicationConstants.
  */
-class ErrorMessagesConstantsTest {
+class ApplicationConstantsTest {
 
     /**
-     * Test unitario para instanciar ErrorMessagesConstants dando error.
+     * Test unitario para instanciar ApplicationConstants dando error.
      *
      * @throws Exception
      */
     @Test
-    @DisplayName("Test unitario para instanciar ErrorMessagesConstants dando error")
+    @DisplayName("Test unitario para instanciar ApplicationConstants dando error")
     void instanceErrorMessagesThrowError() throws Exception {
         // objetos necesarios
-        Constructor<ErrorMessagesConstants> constructor =
-                ErrorMessagesConstants.class.getDeclaredConstructor();
+        Constructor<ApplicationConstants> constructor =
+                ApplicationConstants.class.getDeclaredConstructor();
         constructor.setAccessible(true);
         // test y assert
         assertThrows(InvocationTargetException.class, () -> constructor.newInstance());
