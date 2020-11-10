@@ -66,7 +66,8 @@ class DrugStoresOnDutyControllerTest {
     void getDrugStoresOnDutyReturnOK() throws Exception {
         // objetos necesarios
         List<Drugstore> drugstores = manufactureList();
-        doReturn(drugstores).when(facade).getDrugStoresOnDuty(anyString(), anyString(), anyString());
+        doReturn(drugstores).when(facade)
+                .getDrugStoresOnDuty(anyString(), anyString(), anyString(), any(Boolean.class));
 
         // test y asserts
         this.mockMvc
@@ -83,7 +84,8 @@ class DrugStoresOnDutyControllerTest {
                     assertEquals(actualObject, drugstores);
                 });
         // verificaciones
-        verify(facade, times(1)).getDrugStoresOnDuty(anyString(), anyString(), anyString());
+        verify(facade, times(1))
+                .getDrugStoresOnDuty(anyString(), anyString(), anyString(), any(Boolean.class));
     }
 
     /**

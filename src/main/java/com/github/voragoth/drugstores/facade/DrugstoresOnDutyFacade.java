@@ -15,11 +15,12 @@ public interface DrugstoresOnDutyFacade {
     /**
      * Metodo que retorna las farmacias filtradas por local, comuna y/o region.
      *
-     * @param name    el local para filtrar la farmacia.
-     * @param commune la comuna para filtrar la farmacia.
-     * @param region  la region para filtrar la farmacia, no puede ser null
+     * @param name       el local para filtrar la farmacia.
+     * @param commune    la comuna para filtrar la farmacia.
+     * @param region     la region para filtrar la farmacia, no puede ser null
+     * @param onlyOnDuty filtra si solo se deben retornar las farmacias de turno
      * @return la lista de farmacias filtradas.
      */
-    List<Drugstore> getDrugStoresOnDuty(String name, String commune, @NotNull String region);
+    List<Drugstore> getDrugStoresOnDuty(String name, String commune, @NotNull String region, boolean onlyOnDuty);
 
 }

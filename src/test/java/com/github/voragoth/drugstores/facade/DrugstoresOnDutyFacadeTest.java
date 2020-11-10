@@ -4,6 +4,7 @@ import com.github.voragoth.drugstores.dto.Drugstore;
 import com.github.voragoth.drugstores.dto.vo.DrugstoreVO;
 import com.github.voragoth.drugstores.facade.impl.DrugstoresOnDutyFacadeImpl;
 import com.github.voragoth.drugstores.mapper.DrugstoreOnDutyMapper;
+import com.github.voragoth.drugstores.service.DrugstoresHelperService;
 import com.github.voragoth.drugstores.service.DrugstoresProviderService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,9 +12,8 @@ import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.simplify4u.sjf4jmock.LoggerMock;
-import org.slf4j.Logger;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.server.ResponseStatusException;
 import uk.co.jemos.podam.api.PodamFactory;
@@ -21,7 +21,8 @@ import uk.co.jemos.podam.api.PodamFactoryImpl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
+import java.util.function.Predicate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -42,6 +43,12 @@ class DrugstoresOnDutyFacadeTest {
     private DrugstoresProviderService drugstoresProviderService;
 
     /**
+     * El helper para hacer stubbing.
+     */
+    @Mock
+    private DrugstoresHelperService helper;
+
+    /**
      * El mapper.
      */
     @Spy
@@ -52,8 +59,8 @@ class DrugstoresOnDutyFacadeTest {
      */
     @Spy
     @InjectMocks
-    private DrugstoresOnDutyFacade facade = new DrugstoresOnDutyFacadeImpl(
-            drugstoresProviderService, drugstoreOnDutyMapper);
+    private DrugstoresOnDutyFacade facade = new DrugstoresOnDutyFacadeImpl(drugstoresProviderService, helper,
+            drugstoreOnDutyMapper);
 
     /**
      * El factory de podam.
@@ -61,119 +68,97 @@ class DrugstoresOnDutyFacadeTest {
     private static PodamFactory factory = new PodamFactoryImpl();
 
     /**
-     * Test unitario getDrugStoresOnDuty esperando resultado OK sin filtrar farmacias
+     * Test unitario getDrugStoresOnDuty esperando resultado OK solo turno
      */
     @Test
-    @DisplayName("Test unitario getDrugStoresOnDuty esperando resultado OK sin filtrar farmacias")
+    @DisplayName("Test unitario getDrugStoresOnDuty esperando resultado OK solo turno")
     void getDrugStoresOnDutyShouldReturnOK1() {
         // objetos necesarios
         List<DrugstoreVO> drugstores = manufactureList();
-        // NOTA: llama internamente al maper aca las primeras N veces, luego el servicio lo vuelve a hacer
         List<Drugstore> expected = drugstoreOnDutyMapper.mapDrugstoreVOListToDrugstoreList(drugstores);
-        Logger logger = LoggerMock.getLoggerMock(DrugstoresOnDutyFacadeImpl.class);
-        int expectedTimes = expected.size() * 2;
-
 
         // stubbing
-        doReturn(drugstores).when(drugstoresProviderService).getDrugStoresOnDuty(anyString());
-        when(logger.isDebugEnabled()).thenReturn(true);
+        doReturn(new AsyncResult<DrugstoreVO>(new DrugstoreVO())).when(drugstoresProviderService).getDrugstoresOnDuty();
+        doReturn(drugstores).when(helper).getOnlyOnDutyDrugstores(anyString(), any());
+        doReturn(Optional.empty()).when(helper).createFilter(anyString(), anyString());
 
         // test
-        List<Drugstore> actual = facade.getDrugStoresOnDuty(null, null, "TEST");
+        List<Drugstore> actual = facade.getDrugStoresOnDuty("test", "test", "TEST", true);
 
         // assert y verificaciones
         assertEquals(expected, actual);
-        verify(drugstoresProviderService, times(1)).getDrugStoresOnDuty(anyString());
-        verify(drugstoreOnDutyMapper, times(expectedTimes)).mapDrugstoreVOToDrugstore(any(DrugstoreVO.class));
+        verify(drugstoresProviderService).getDrugstoresOnDuty();
+        verify(helper).getOnlyOnDutyDrugstores(anyString(), any());
+        verify(helper).createFilter(anyString(), anyString());
     }
 
     /**
-     * Test unitario getDrugStoresOnDuty esperando resultado OK filtrando por local
+     * Test unitario getDrugStoresOnDuty esperando resultado OK incluyendo las no de turno
      */
     @Test
-    @DisplayName("Test unitario getDrugStoresOnDuty esperando resultado OK filtrando por local")
+    @DisplayName("Test unitario getDrugStoresOnDuty esperando resultado OK incluyendo las no de turno")
     void getDrugStoresOnDutyShouldReturnOK2() {
         // objetos necesarios
         List<DrugstoreVO> drugstores = manufactureList();
-        String local = "Local de prueba";
-        drugstores.get(0).setName(local);
-        Drugstore expected = drugstoreOnDutyMapper.mapDrugstoreVOToDrugstore(drugstores.get(0));
-        Logger logger = LoggerMock.getLoggerMock(DrugstoresOnDutyFacadeImpl.class);
+        List<Drugstore> expected = drugstoreOnDutyMapper.mapDrugstoreVOListToDrugstoreList(drugstores);
 
         // stubbing
-        doReturn(drugstores).when(drugstoresProviderService).getDrugStoresOnDuty(anyString());
-        when(logger.isDebugEnabled()).thenReturn(false);
+        doReturn(new AsyncResult<DrugstoreVO>(new DrugstoreVO())).when(drugstoresProviderService).getDrugstoresOnDuty();
+        doReturn(new AsyncResult<DrugstoreVO>(new DrugstoreVO())).when(drugstoresProviderService).getDrugStoresByRegion(anyString());
+        doReturn(drugstores).when(helper).getDrugstoresByRegion(anyString(), any(), any());
+        doReturn(Optional.empty()).when(helper).createFilter(anyString(), anyString());
 
         // test
-        List<Drugstore> actual = facade.getDrugStoresOnDuty(local, null, "TEST");
+        List<Drugstore> actual = facade.getDrugStoresOnDuty("test", "test", "TEST", false);
 
         // assert y verificaciones
-        assertEquals(expected, actual.get(0));
-        verify(drugstoresProviderService, times(1)).getDrugStoresOnDuty(anyString());
-        verify(drugstoreOnDutyMapper, times(2)).mapDrugstoreVOToDrugstore(any(DrugstoreVO.class));
+        assertEquals(expected, actual);
+        verify(drugstoresProviderService).getDrugstoresOnDuty();
+        verify(drugstoresProviderService).getDrugStoresByRegion(anyString());
+        verify(helper).getDrugstoresByRegion(anyString(), any(), any());
+        verify(helper).createFilter(anyString(), anyString());
     }
 
     /**
-     * Test unitario getDrugStoresOnDuty esperando resultado OK filtrando por comuna
+     * Test unitario getDrugStoresOnDuty esperando resultado KO sin farmacias obtenidas antes de filtrar
      */
     @Test
-    @DisplayName("Test unitario getDrugStoresOnDuty esperando resultado OK filtrando por comuna")
-    void getDrugStoresOnDutyShouldReturnOK3() {
-        // objetos necesarios
-        List<DrugstoreVO> drugstores = manufactureList();
-        String commune = "2";
-        drugstores.get(0).setCommuneId(commune);
-        Drugstore expected = drugstoreOnDutyMapper.mapDrugstoreVOToDrugstore(drugstores.get(0));
-        Logger logger = LoggerMock.getLoggerMock(DrugstoresOnDutyFacadeImpl.class);
-
-        // stubbing
-        doReturn(drugstores).when(drugstoresProviderService).getDrugStoresOnDuty(anyString());
-        when(logger.isDebugEnabled()).thenReturn(false);
-
-        // test
-        List<Drugstore> actual = facade.getDrugStoresOnDuty(null, commune, "TEST");
-
-        // assert y verificaciones
-        assertEquals(expected, actual.get(0));
-        verify(drugstoresProviderService, times(1)).getDrugStoresOnDuty(anyString());
-        verify(drugstoreOnDutyMapper, times(2)).mapDrugstoreVOToDrugstore(any(DrugstoreVO.class));
-    }
-
-    /**
-     * Test unitario getDrugStoresOnDuty esperando resultado KO sin farmacias obtenidas
-     */
-    @Test
-    @DisplayName("Test unitario getDrugStoresOnDuty esperando resultado KO sin farmacias obtenidas")
+    @DisplayName("Test unitario getDrugStoresOnDuty esperando resultado KO sin farmacias obtenidas antes de filtrar")
     void getDrugStoresOnDutyShouldThrowException1() {
-        // objetos necesarios
-        List<DrugstoreVO> drugstores = new ArrayList<>();
-
-        doReturn(drugstores).when(drugstoresProviderService).getDrugStoresOnDuty(anyString());
+        // stubbing
+        doReturn(new AsyncResult<DrugstoreVO>(new DrugstoreVO())).when(drugstoresProviderService).getDrugstoresOnDuty();
+        doReturn(new ArrayList<>()).when(helper).getOnlyOnDutyDrugstores(anyString(), any());
 
         // test y assert
-        assertThrows(ResponseStatusException.class, () -> facade.getDrugStoresOnDuty(null, null, "TEST"));
+        assertThrows(ResponseStatusException.class, () -> facade.getDrugStoresOnDuty("test", "test", "TEST", true));
 
-        // verificaciones
-        verify(drugstoresProviderService, times(1)).getDrugStoresOnDuty(anyString());
+        // assert y verificaciones
+        verify(drugstoresProviderService).getDrugstoresOnDuty();
+        verify(helper).getOnlyOnDutyDrugstores(anyString(), any());
     }
 
     /**
-     * Test unitario getDrugStoresOnDuty esperando resultado KO sin farmacias obtenidas luego de filtrar
+     * Test unitario getDrugStoresOnDuty esperando resultado KO sin farmacias obtenidas despues de filtrar
      */
     @Test
-    @DisplayName("Test unitario getDrugStoresOnDuty esperando resultado KO sin farmacias obtenidas luego de filtrar")
+    @DisplayName("Test unitario getDrugStoresOnDuty esperando resultado KO sin farmacias obtenidas despues de filtrar")
     void getDrugStoresOnDutyShouldThrowException2() {
         // objetos necesarios
-        List<DrugstoreVO> drugstores = manufactureList().stream().filter(
-                d -> !d.getName().equals("test")).collect(Collectors.toList());
+        List<DrugstoreVO> drugstores = manufactureList();
+        Predicate<DrugstoreVO> filter = (DrugstoreVO d) -> d.getLatitude().equals("match imposible");
 
-        doReturn(drugstores).when(drugstoresProviderService).getDrugStoresOnDuty(anyString());
+        // stubbing
+        doReturn(new AsyncResult<DrugstoreVO>(new DrugstoreVO())).when(drugstoresProviderService).getDrugstoresOnDuty();
+        doReturn(drugstores).when(helper).getOnlyOnDutyDrugstores(anyString(), any());
+        doReturn(Optional.of(filter)).when(helper).createFilter(anyString(), anyString());
 
         // test y assert
-        assertThrows(ResponseStatusException.class, () -> facade.getDrugStoresOnDuty("test", null, "TEST"));
+        assertThrows(ResponseStatusException.class, () -> facade.getDrugStoresOnDuty("test", "test", "TEST", true));
 
-        // verificaciones
-        verify(drugstoresProviderService, times(1)).getDrugStoresOnDuty(anyString());
+        // assert y verificaciones
+        verify(drugstoresProviderService).getDrugstoresOnDuty();
+        verify(helper).getOnlyOnDutyDrugstores(anyString(), any());
+        verify(helper).createFilter(anyString(), anyString());
     }
 
     /**

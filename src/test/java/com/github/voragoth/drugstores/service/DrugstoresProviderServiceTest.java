@@ -45,7 +45,7 @@ class DrugstoresProviderServiceTest {
      */
     @Spy
     @InjectMocks
-    private DrugstoresProviderService service = new DrugstoresProviderServiceImpl(
+    private DrugstoresProviderServiceImpl service = new DrugstoresProviderServiceImpl(
             drugstoreByRegionFeignClient, drugstoreOnDutyMapper);
 
     /**
@@ -54,11 +54,13 @@ class DrugstoresProviderServiceTest {
     private static PodamFactory factory = new PodamFactoryImpl();
 
     /**
-     * Test unitario getDrugStoresOnDuty esperando resultado OK"
+     * Test unitario getDrugstoresByRegion esperando resultado OK"
+     *
+     * @throws Exception si falla el future.
      */
     @Test
-    @DisplayName("Test unitario getDrugStoresOnDuty esperando resultado OK")
-    void getDrugStoresOnDutyShouldReturnOK() {
+    @DisplayName("Test unitario getDrugstoresByRegion esperando resultado OK")
+    void getDrugstoresByRegionShouldReturnOK() throws Exception{
         // objetos necesarios
         List<DrugstoreFeignDTO> drugstores = manufactureList();
         // NOTA: llama internamente al maper aca las primeras N veces, luego el servicio lo vuelve a hacer
@@ -66,13 +68,35 @@ class DrugstoresProviderServiceTest {
         int timesToVerify = expected.size() * 2;
 
         // stubbing
-        doReturn(drugstores).when(drugstoreByRegionFeignClient).getDrugstoresOnDuty(anyString());
+        doReturn(drugstores).when(drugstoreByRegionFeignClient).getDrugstoresByRegion(anyString());
 
         // test
-        List<DrugstoreVO> actual = service.getDrugStoresOnDuty("test");
+        List<DrugstoreVO> actual = service.getDrugStoresByRegion("test").get();
+
         // assert y verificacion
         assertEquals(expected, actual);
-        verify(drugstoreByRegionFeignClient, times(1)).getDrugstoresOnDuty(anyString());
+        verify(drugstoreByRegionFeignClient, times(1)).getDrugstoresByRegion(anyString());
+        verify(drugstoreOnDutyMapper, times(timesToVerify)).mapDrugstoreFeignDTOToDrugstoreVO(any(DrugstoreFeignDTO.class));
+    }
+
+    @Test
+    @DisplayName("Test unitario getDrugStoresOnDuty esperando resultado OK")
+    void getDrugStoresOnDutyShouldReturnOK() throws Exception{
+        // objetos necesarios
+        List<DrugstoreFeignDTO> drugstores = manufactureList();
+        // NOTA: llama internamente al maper aca las primeras N veces, luego el servicio lo vuelve a hacer
+        List<DrugstoreVO> expected = drugstoreOnDutyMapper.mapDrugstoreFeignDTOListToDrugstoreVOList(drugstores);
+        int timesToVerify = expected.size() * 2;
+
+        // stubbing
+        doReturn(drugstores).when(drugstoreByRegionFeignClient).getDrugstoresOnDuty();
+
+        // test
+        List<DrugstoreVO> actual = service.getDrugstoresOnDuty().get();
+
+        // assert y verificacion
+        assertEquals(expected, actual);
+        verify(drugstoreByRegionFeignClient, times(1)).getDrugstoresOnDuty();
         verify(drugstoreOnDutyMapper, times(timesToVerify)).mapDrugstoreFeignDTOToDrugstoreVO(any(DrugstoreFeignDTO.class));
     }
 

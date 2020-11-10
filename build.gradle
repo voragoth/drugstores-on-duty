@@ -7,7 +7,7 @@ plugins {
 }
 
 group = 'com.github.voragoth'
-version = '1.0.1-SNAPSHOT'
+version = '1.0.2-SNAPSHOT'
 sourceCompatibility = '1.8'
 
 configurations {
@@ -46,6 +46,7 @@ dependencies {
     testImplementation 'org.mockito:mockito-inline:3.6.0'
     testImplementation 'org.mockito:mockito-core:3.6.0'
     testImplementation 'org.simplify4u:slf4j-mock:1.0.3'
+
 
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'

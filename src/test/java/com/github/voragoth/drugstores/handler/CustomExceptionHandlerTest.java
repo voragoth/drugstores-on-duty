@@ -1,11 +1,14 @@
 package com.github.voragoth.drugstores.handler;
 
+import com.netflix.hystrix.exception.HystrixRuntimeException;
 import org.hibernate.validator.internal.engine.ConstraintViolationImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
@@ -119,6 +122,82 @@ class CustomExceptionHandlerTest {
 
         // asserts y tests
         assertNotNull(handler.handleMethodArgumentTypeMismatchException(matme, wreq));
+    }
+
+    /**
+     * Test unitario para handleHystrixRuntimeException con resultado OK y causa ResponseStatusException
+     */
+    @Test
+    @DisplayName("Test unitario para handleHystrixRuntimeException con resultado OK y causa ResponseStatusException")
+    void handleHystrixRuntimeExceptionShouldBeOK1() {
+        // Objetos necesarios
+        ServletWebRequest wreq = mock(ServletWebRequest.class);
+        ResponseStatusException rse = new ResponseStatusException(HttpStatus.I_AM_A_TEAPOT, "TEST");
+        Exception ex = mock(Exception.class);
+        AssertionError ae = mock(AssertionError.class);
+        HystrixRuntimeException hre = mock(HystrixRuntimeException.class);
+
+        // stubbing
+        when(wreq.getRequest()).thenReturn(mock(HttpServletRequest.class));
+        doReturn(HystrixRuntimeException.FailureType.TIMEOUT).when(hre).getFailureType();
+
+        doReturn(ex).when(hre).getFallbackException();
+        doReturn(ae).when(ex).getCause();
+        doReturn(rse).when(ae).getCause();
+
+        // test y asserts
+        assertNotNull(handler.handleHystrixRuntimeException(hre, wreq));
+    }
+
+    @Test
+    @DisplayName("Test unitario para handleHystrixRuntimeException con resultado OK y causa runtime anidada")
+    void handleHystrixRuntimeExceptionShouldBeOK2() {
+        // Objetos necesarios
+        ServletWebRequest wreq = mock(ServletWebRequest.class);
+        Exception ex = mock(Exception.class);
+        AssertionError ae = mock(AssertionError.class);
+        HystrixRuntimeException hre = mock(HystrixRuntimeException.class);
+
+        // stubbing
+        when(wreq.getRequest()).thenReturn(mock(HttpServletRequest.class));
+        doReturn(HystrixRuntimeException.FailureType.TIMEOUT).when(hre).getFailureType();
+        doReturn(ex).when(hre).getFallbackException();
+        doReturn(ae).when(ex).getCause();
+        doReturn(new RuntimeException()).when(ae).getCause();
+
+        // test y asserts
+        assertNotNull(handler.handleHystrixRuntimeException(hre, wreq));
+    }
+
+    @Test
+    @DisplayName("Test unitario para handleHystrixRuntimeException con resultado OK y causa runtime base")
+    void handleHystrixRuntimeExceptionShouldBeOK3() {
+        // Objetos necesarios
+        ServletWebRequest wreq = mock(ServletWebRequest.class);
+        HystrixRuntimeException hre = mock(HystrixRuntimeException.class);
+
+        // stubbing
+        when(wreq.getRequest()).thenReturn(mock(HttpServletRequest.class));
+        doReturn(HystrixRuntimeException.FailureType.TIMEOUT).when(hre).getFailureType();
+        doReturn(new RuntimeException()).when(hre).getFallbackException();
+
+        // test y asserts
+        assertNotNull(handler.handleHystrixRuntimeException(hre, wreq));
+    }
+
+    @Test
+    @DisplayName("Test unitario para handleHystrixRuntimeException con resultado OK sin causas")
+    void handleHystrixRuntimeExceptionShouldBeOK4() {
+        // Objetos necesarios
+        ServletWebRequest wreq = mock(ServletWebRequest.class);
+        HystrixRuntimeException hre = mock(HystrixRuntimeException.class);
+
+        // stubbing
+        when(wreq.getRequest()).thenReturn(mock(HttpServletRequest.class));
+        doReturn(HystrixRuntimeException.FailureType.TIMEOUT).when(hre).getFailureType();
+
+        // test y asserts
+        assertNotNull(handler.handleHystrixRuntimeException(hre, wreq));
     }
 
     /**
