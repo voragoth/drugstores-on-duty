@@ -23,7 +23,7 @@ feign:
       connectTimeout: ${env.drugstores.feign.admin-divisions.connect-timeout:5000}
       readTimeout: ${env.drugstores.feign.admin-divisions.read-timeout:5000}
 drugstores:
-  default-region: ${env.drugstores.default-region}
+  default-region: ${env.drugstores.default-region:7}
   feign:
     admin-divisions:
       base-url: ${env.admin-division.base-url}
