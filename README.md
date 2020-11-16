@@ -2,6 +2,8 @@
 
 > README.md sin tildes intencionalmente.
 
+> Swagger en http://drugstores-on-duty-api.sa-east-1.elasticbeanstalk.com/swagger-ui.html
+
 ### Provee los siguientes endpoints:
 > [GET]&#8195;/api/v1/farmacias-de-turno
 
